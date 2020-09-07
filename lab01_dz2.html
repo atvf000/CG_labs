@@ -1,0 +1,154 @@
+<html>
+<body>
+
+<canvas width="1000" height="1000" id='lab01'>
+</canvas>
+
+<script>
+
+let canvas = document.getElementById('lab01');
+let ctx = canvas.getContext('2d');
+
+var length = 200;
+var width = 100;
+var thickness = 20;
+var volume = 15;
+var base = 100;
+
+function vertically(a, x, y) {
+	for (var i = 0; i < a; i++) {
+		ctx.fillRect(x, y+i, 2, 2);   
+	}
+}
+
+function horizontally(a, x, y) {
+	for (var i = 0; i < a; i++) {
+		ctx.fillRect(x+i, y, 2, 2);
+	}
+}
+
+function diagonal(a, x, y) {
+	for (var i = 0 ; i < a ; i++) {
+		ctx.fillRect(x+i, y-i, 2, 2);
+	}
+}
+
+// I
+
+var middle = (width-thickness)/2;
+
+vertically(length,base,base);
+vertically(length,base+thickness,base);
+
+horizontally(middle,base-middle, base);
+horizontally(middle,base+thickness, base);
+
+vertically(thickness,base-middle,base-thickness);
+vertically(thickness,base+thickness+middle,base-thickness);
+
+horizontally(width,base-middle, base-thickness);
+
+horizontally(middle,base-middle, base+length);
+horizontally(middle,base+thickness, base+length);
+
+vertically(thickness,base-middle,base+length);
+vertically(thickness,base+thickness+middle,base+length);
+
+horizontally(width,base-middle, base+length+thickness);
+
+// объем
+
+diagonal(volume,base+thickness,base+length);
+diagonal(volume,base+thickness+middle,base+length);
+diagonal(volume,base+thickness+middle,base+length+thickness);
+diagonal(volume,base-middle,base+length);
+
+vertically(thickness,base+thickness+middle+volume,base+length-volume);
+horizontally(middle,base+thickness+volume,base+length-volume);
+horizontally(middle-volume, base-middle+volume,base+length-volume);
+
+vertically(length-volume,base+thickness+volume,base);
+
+diagonal(volume,base-middle,base-thickness);
+diagonal(volume,base+thickness+middle,base);
+diagonal(volume,base+thickness+middle,base-thickness);
+
+vertically(thickness,base+thickness+middle+volume,base-volume-thickness);
+horizontally(width,base-middle+volume,base-thickness-volume);
+
+//C
+
+var baseC = base+ 150;
+
+vertically(length+2*thickness,baseC,base-thickness);
+vertically(length,baseC+thickness,base);
+
+horizontally(width,baseC,base-thickness);
+horizontally(width,baseC,base+length+thickness);
+
+horizontally(width-thickness,baseC+thickness,base);
+horizontally(width-thickness,baseC+thickness,base+length);
+
+vertically(thickness,baseC+width,base-thickness);
+vertically(thickness,baseC+width,base+length);
+
+//объем
+
+diagonal(volume,baseC+thickness,base+length);
+diagonal(volume,baseC+width,base+length);
+diagonal(volume,baseC+width,base+length+thickness);
+
+vertically(thickness,baseC+width+volume,base+length-volume);
+horizontally(width-thickness,baseC+thickness+volume,base+length-volume);
+
+vertically(length-volume,baseC+thickness+volume,base);
+
+diagonal(volume,baseC,base-thickness);
+diagonal(volume,baseC+width,base);
+diagonal(volume,baseC+width,base-thickness);
+
+vertically(thickness,baseC+width+volume,base-volume-thickness);
+horizontally(width,baseC+volume,base-thickness-volume);
+
+// 8
+
+var base8 = baseC + middle + 150;
+middle = (length-thickness)/2;
+
+vertically(length+2*thickness,base8,base-thickness);
+vertically(middle,base8+thickness,base);
+vertically(middle,base8+thickness,base+middle+thickness);
+
+vertically(length+2*thickness,base8+width,base-thickness);
+vertically(middle,base8+width-thickness,base);
+vertically(middle,base8+width-thickness,base+middle+thickness);
+
+horizontally(width,base8,base-thickness);
+horizontally(width-2*thickness,base8+thickness,base);
+horizontally(width-2*thickness,base8+thickness,base+middle);
+
+horizontally(width,base8,base+length+thickness);
+horizontally(width-2*thickness,base8+thickness,base+length);
+horizontally(width-2*thickness,base8+thickness,base+middle+thickness);
+
+// объем
+
+diagonal(volume,base8+width,base+length+thickness);
+diagonal(volume,base8+width,base-thickness);
+diagonal(volume,base8,base-thickness);
+
+vertically(length+2*thickness,base8+width+volume,base-thickness-volume);
+horizontally(width,base8+volume,base-thickness-volume);
+
+diagonal(volume,base8+thickness,base+length);
+vertically(middle-volume,base8+thickness+volume,base+middle+thickness);
+horizontally(width-2*thickness-volume,base8+thickness+volume,base+length-volume);
+
+diagonal(volume,base8+thickness,base+middle);
+vertically(middle-volume,base8+thickness+volume,base);
+horizontally(width-2*thickness-volume,base8+thickness+volume,base+middle-volume);
+
+</script>
+
+</body>
+</html>

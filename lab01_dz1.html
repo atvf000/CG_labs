@@ -1,0 +1,33 @@
+<html>
+<body>
+
+<canvas width="500" height="500" id='lab01'>
+</canvas>
+
+<script>
+
+let canvas = document.getElementById('lab01');
+let ctx = canvas.getContext('2d');
+var j =0;
+
+
+setInterval( function() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height)
+		
+		for (var i = 0; i < 20*Math.PI; i+=0.01) {
+			ctx.fillRect(200+100*Math.cos(i/10), 200+200*Math.sin(i/10), 1, 1);
+			ctx.fillRect(200+200*Math.cos(i/10), 200+100*Math.sin(i/10), 1, 1);
+		}
+		ctx.fillRect(195,195,10,10);
+
+		ctx.fillRect(200+100*Math.cos(j/10), 200+200*Math.sin(j/10), 5, 5);
+		ctx.fillRect(200+200*Math.cos(j/10), 200+100*Math.sin(j/10), 5, 5);
+		j++;
+	},
+	50
+
+)
+</script>
+
+</body>
+</html>
