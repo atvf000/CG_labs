@@ -1,0 +1,35 @@
+<HTML>
+<body>
+
+<canvas width="1000" height="1000" id='lab01'>
+</canvas>
+
+<script>
+
+let canvas = document.getElementById('lab01');
+let ctx = canvas.getContext('2d');
+let image = new Image();
+image.crossOrigin = "Anonymous";
+image.onload = function()
+{
+	ctx.drawImage(image, 0, 0, 500, 500);
+
+	let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+	ctx.putImageData(data, 500, 500);
+	for (let i = 0; i < data.data.length; i+= 4) {
+		const t = data.data;
+		const m = (t[i] + t[i+1] + t[i+2])/3;
+		t[i] = m;
+		t[i+1] = m;
+		t[i+2] = m;
+	}
+	//console.log(data);
+	ctx.putImageData(data, 0, 0);
+}
+image.src = "https://i.imgur.com/lqBNwtx.jpeg";
+
+	
+</script>
+	
+</body>
+</HTML>
