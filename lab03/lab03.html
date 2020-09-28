@@ -13,21 +13,29 @@
     let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
     function createLine(data, x0, y0, x1, y1) {
-    	  var y = y0;
-                var eps = 0;
-                var k=2*(y1-y0);
-                var pw=1;
-                for (var x=x0; x<=x1; x++) {
-                        data.data[(x+y*data.width)*4+3]=255*
-                                Math.pow(Math.abs(0.5- (eps/(2*(x1-x0))) ),pw);
-                        data.data[(x+(y+1)*data.width)*4+3]=255*
-                                Math.pow(Math.abs(0.5+ (eps/(2*(x1-x0))) ), pw);
-                        eps = eps+k;
-                        if (eps>(x1-x0)) {
-                                y++;
-                                eps = eps - 2*(x1-x0);
-                        }
-                }
+
+		let dx =  Math.abs(x1-x0);
+		let dy = -1* Math.abs(y1-y0);
+		let stepx = (x0 < x1 ? 1 : -1);
+		let stepy = (y0 < y1 ? 1 : -1); 
+		let error = dx+dy;
+		let end = false;
+
+		while(!end) { 
+			ctx.fillRect(x0, y0, 3*stepx ,3*stepy);
+
+			if (2 * error >= dy) { 
+				error += dy; 
+				x0 += stepx; 
+			} 
+			if (2 * error <= dx) { 
+				error += dx; 
+				y0 += stepy; 
+			} 
+
+		if (Math.abs(x1 - x0) < 3 && Math.abs(y1 - y0) < 3 )
+			end = true;	
+		}	
     }
 
 	canvas.addEventListener("click", function(event){
@@ -40,7 +48,6 @@
 			x1 = event.offsetX;
 			y1 = event.offsetY;
 			createLine(data, x0, y0, x1, y1);
-			ctx.putImageData(data, 0, 0);
 			flag = 0;
 		}
 	});
