@@ -1,0 +1,122 @@
+<html>
+
+<body>
+
+<canvas width="1500" height="500" id="lab04">
+</canvas>
+
+<script>
+
+	let canvas = document.getElementById("lab04");
+    let ctx = canvas.getContext("2d");
+    let data;
+    let image = new Image();
+
+    let firstS = [[-1, 0, 1],
+                  [-2, 0, 2],
+                  [-1, 0, 1]]
+
+    let secondS = [[-1, -2, -1],
+                   [ 0,  0,  0],
+                   [ 1,  2,  1]]
+
+    image.crossOrigin = "Anonymous";
+
+    function original() {
+    	ctx.drawImage(image, 0, 0, 500, 500);
+    }
+
+    function Gaussian_filter() {
+		let imageDataG = ctx.createImageData(canvas.width, canvas.height);
+		let dataG = imageDataG.data;
+		let matrix1 = createGaussianMatrix();
+
+		for (let i = 3; i < data.length; i+= 4)
+			dataG[i] = data[i];
+
+		for (let i =0; i < 3; i++) {
+
+			for (let j =0; j < canvas.width; j++)
+				for (let k = 0; k < canvas.height; k++){
+					let matrix2 = createMatrix(j,k,i,5)
+					dataG[(k*canvas.width+j)*4+i] = convolution(matrix1,matrix2);
+				}
+		}
+		ctx.putImageData(imageDataG, 1000, 0);
+    }
+
+	function Sobel_filter() {
+		let imageDataS = ctx.createImageData(canvas.width, canvas.height);
+		let dataS = imageDataS.data;
+
+		for (let i = 3; i < data.length; i+= 4)
+			dataS[i] = data[i];
+
+		for (let i =0; i < 3; i++) {
+
+			for (let j =0; j < canvas.width; j++)
+				for (let k = 0; k < canvas.height; k++){
+					let matrix = createMatrix(j,k,i,3)
+					let first = convolution(matrix,firstS);
+					let second = convolution(matrix,secondS);
+					dataS[(k*canvas.width+j)*4+i] = Math.sqrt(first*first + second*second)
+				}
+		}
+		ctx.putImageData(imageDataS, 500, 0);
+    }
+
+    function createGaussianMatrix() {
+    	let size = 5;
+    	let matrix = new Array(size);
+
+    	for (let i = -2; i < size-2; i++) {
+    		matrix[i+2] = new Array(size);
+    		for (let j = -2; j < size-2; j++)
+    			matrix[i+2][j+2] = (1/2/Math.PI)*(Math.exp(-(i*i+j*j)/2))
+    	}
+    	return matrix
+    }
+
+    function createMatrix(x,y,channel,size) {
+    	let move = (size == 3) ? 1:2;
+
+    	let matrix = new Array(size);
+    	for (let i = 0; i < size; i++) {
+    		matrix[i] = new Array(size);
+    		for (let j =0; j < size; j++)
+    			matrix[i][j] = getPixel(x-move+i, y-move+j, channel)
+    	}
+    	return matrix
+    }
+
+    function convolution(matrix1, matrix2) {
+    	let result = 0;
+    	for (let i =0; i < matrix1.length;i++)
+    		for (let j =0; j < matrix1.length;j++)
+    			result += matrix1[i][j]*matrix2[i][j];
+
+		return result
+    }
+
+    function getPixel(x, y, channel ) {
+    	if (x < 0 || y < 0  || x >= canvas.width || y >= canvas.height)
+    		return 0;
+    	return data[(y*canvas.width+x)*4+channel]
+    }
+
+    image.onload = function() {
+		original();
+		    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		    data = imageData.data;
+
+		Sobel_filter();
+
+		Gaussian_filter();
+
+	}
+	image.src = "https://i.imgur.com/lqBNwtx.jpeg";
+
+</script>
+
+</body>
+</html>
