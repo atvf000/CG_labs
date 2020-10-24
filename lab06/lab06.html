@@ -1,0 +1,113 @@
+<html>
+
+<body>
+
+	<canvas width="500" height="500" id="lab06">
+	</canvas>
+
+	<script>
+
+		let canvas = document.getElementById("lab06");
+		let ctx = canvas.getContext("2d");
+
+		let x = new Array();
+		let y = new Array();
+		let line = new Array();
+		let flag = false;
+		let count = 0;
+
+		function createLine(x0, y0, x1, y1) {
+
+			let dx = Math.abs(x1 - x0);
+			let dy = -1 * Math.abs(y1 - y0);
+			let stepx = (x0 < x1 ? 1 : -1);
+			let stepy = (y0 < y1 ? 1 : -1);
+			let error = dx + dy;
+			let end = false;
+
+			while (!end) {
+				ctx.fillRect(x0, y0, 2, 2);
+
+				if (2 * error >= dy) {
+					error += dy;
+					x0 += stepx;
+				}
+				if (2 * error <= dx) {
+					error += dx;
+					y0 += stepy;
+				}
+
+				if (Math.abs(x1 - x0) <= 1 && Math.abs(y1 - y0) <= 1)
+					end = true;
+			}
+		}
+
+		function fillarea(x, y) {
+			let arr = new Array();
+			let point = [x, y];
+			arr.push(point);
+
+			while (arr.length != 0) {
+				let newx;
+				let newy;
+				let newpoint;
+				point = arr.pop();
+				if (ctx.getImageData(point[0], point[1], 1, 1).data[3] != 255)
+					ctx.fillRect(point[0], point[1], 1, 1);
+				if (ctx.getImageData(point[0] + 1, point[1], 1, 1).data[3] != 255) {
+					newx = point[0] + 1;
+					newy = point[1];
+					newpoint = [newx, newy];
+					arr.push(newpoint);
+				}
+				if (ctx.getImageData(point[0] - 1, point[1], 1, 1).data[3] != 255) {
+					newx = point[0] - 1;
+					newy = point[1];
+					newpoint = [newx, newy]
+					arr.push(newpoint);
+				}
+				if (ctx.getImageData(point[0], point[1] + 1, 1, 1).data[3] != 255) {
+					newx = point[0];
+					newy = point[1] + 1;
+					newpoint = [newx, newy];
+					arr.push(newpoint);
+				}
+				if (ctx.getImageData(point[0], point[1] - 1, 1, 1).data[3] != 255) {
+					newx = point[0];
+					newy = point[1] - 1;
+					newpoint = [newx, newy];
+					arr.push(newpoint);
+				}
+
+			}
+		}
+
+		canvas.addEventListener("click", function (event) {
+			if (!flag) {
+				x.push(event.offsetX);
+				y.push(event.offsetY);
+				if (count >= 1)
+					createLine(x[count - 1], y[count - 1], x[count], y[count]);
+				count++;
+			}
+			else {
+				ctx.fillStyle = "#00ff00";
+				fillarea(event.offsetX, event.offsetY);
+				ctx.fillStyle = "#000000";
+			}
+
+		});
+
+		document.addEventListener("keypress", function (event) {
+			flag = true;
+			x.push(x[0]);
+			y.push(y[0]);
+			createLine(x[count - 1], y[count - 1], x[0], y[0]);
+		});
+
+
+	</script>
+
+</body>
+
+</html>
