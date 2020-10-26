@@ -1,0 +1,108 @@
+<html>
+
+<body>
+
+	<canvas width="512" height="512" id="lab06">
+	</canvas>
+
+	<script>
+		// style="background-color: burlywood;
+		let canvas = document.getElementById("lab06");
+		let ctx = canvas.getContext("2d");
+
+		let pointx = new Array();
+		let pointy = new Array();
+
+		let x = new Array();
+		let y = new Array();
+		let miny = 512;
+		let maxy = -1;
+		let line = new Array();
+		let count = 0;
+
+		function createLine(x0, y0, x1, y1) {
+
+			let dx = Math.abs(x1 - x0);
+			let dy = -1 * Math.abs(y1 - y0);
+			let stepx = (x0 < x1 ? 1 : -1);
+			let stepy = (y0 < y1 ? 1 : -1);
+			let error = dx + dy;
+			let end = false;
+			while (!end) {
+				ctx.fillRect(x0, y0, 1, 1);
+
+				if (Math.abs(x0 - x1) + Math.abs(y0 - y1) < 2) {
+					end = true;
+				}
+				if (y0 < miny) { miny = y0; }
+				if (y0 > maxy) { maxy = y0; }
+
+				if (2 * error >= dy) {
+					error += dy;
+					x0 += stepx;
+				}
+				if (2 * error <= dx) {
+					error += dx;
+					y0 += stepy;
+				}
+				x.push(x0);
+				y.push(y0);
+			}
+
+		}
+
+		function fillarea() {
+
+			for (let i = miny; i < maxy; ++i) {
+				let currentX = new Array();
+				var ony = false;
+
+				let prevX = 0;
+				for (let j = 0; j < y.length; j++) {
+
+					if (y[j] === i && ony === false) {
+						ony = true;
+						currentX.push(x[j]);
+					}
+					else if (y[j] != i && ony === true) {
+						ony = false;
+					}
+				}
+
+				for (let j = 1; j < currentX.length; j += 2) {
+					ctx.fillStyle = "#00ff00";
+					createLine(currentX[j - 1], i, currentX[j], i)
+					ctx.fillStyle = "#000000";
+				}
+			}
+		}
+
+		canvas.addEventListener("click", function (event) {
+			pointx.push(event.offsetX);
+			pointy.push(event.offsetY);
+			if (count >= 1) {
+				createLine(pointx[count - 1], pointy[count - 1], pointx[count], pointy[count]);
+			}
+			count++;
+
+		});
+
+		document.addEventListener("keypress", function (event) {
+			pointx.push(pointx[0]);
+			pointy.push(pointy[0]);
+			createLine(pointx[count - 1], pointy[count - 1], pointx[0], pointy[0]);
+
+			fillarea();
+
+			for (let j = 0; j < pointx.length - 1; j++) {
+				createLine(pointx[j], pointy[j], pointx[j + 1], pointy[j + 1])
+			}
+
+		});
+
+
+	</script>
+
+</body>
+
+</html>
