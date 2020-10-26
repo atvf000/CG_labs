@@ -2,57 +2,59 @@
 
 <body>
 
-<canvas width="500" height="500" id="lab03">
-</canvas>
+	<canvas width="500" height="500" id="lab03">
+	</canvas>
 
-<script>
+	<script>
 
-	let canvas = document.getElementById("lab03");
-    let ctx = canvas.getContext("2d");
-    let flag = 0;
-    let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+		let canvas = document.getElementById("lab03");
+		let ctx = canvas.getContext("2d");
+		let flag = 0;
+		let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-    function createLine(data, x0, y0, x1, y1) {
+		function createLine(data, x0, y0, x1, y1) {
 
-		let dx =  Math.abs(x1-x0);
-		let dy = -1* Math.abs(y1-y0);
-		let stepx = (x0 < x1 ? 1 : -1);
-		let stepy = (y0 < y1 ? 1 : -1); 
-		let error = dx+dy;
-		let end = false;
+			let dx = Math.abs(x1 - x0);
+			let dy = -1 * Math.abs(y1 - y0);
+			let stepx = (x0 < x1 ? 1 : -1);
+			let stepy = (y0 < y1 ? 1 : -1);
+			let error = dx + dy;
+			let end = false;
 
-		while(!end) { 
-			ctx.fillRect(x0, y0, 3*stepx ,3*stepy);
+			while (!end) {
+				ctx.fillRect(x0, y0, 3 * stepx, 3 * stepy);
 
-			if (2 * error >= dy) { 
-				error += dy; 
-				x0 += stepx; 
-			} 
-			if (2 * error <= dx) { 
-				error += dx; 
-				y0 += stepy; 
-			} 
+				if (2 * error >= dy) {
+					error += dy;
+					x0 += stepx;
+				}
+				if (2 * error <= dx) {
+					error += dx;
+					y0 += stepy;
+				}
 
-		if (Math.abs(x1 - x0) <= 3 && Math.abs(y1 - y0) <= 3 )
-			end = true;	
-		}	
-    }
-
-	canvas.addEventListener("click", function(event){
-		if (!flag) {
-			x0 = event.offsetX;
-			y0 = event.offsetY;
-			flag = 1;
-		} 
-		else {
-			x1 = event.offsetX;
-			y1 = event.offsetY;
-			createLine(data, x0, y0, x1, y1);
-			flag = 0;
+				if (Math.abs(x0 - x1) + Math.abs(y0 - y1) < 2) {
+					end = true;
+				}
+			}
 		}
-	});
-	
-</script>
+
+		canvas.addEventListener("click", function (event) {
+			if (!flag) {
+				x0 = event.offsetX;
+				y0 = event.offsetY;
+				flag = 1;
+			}
+			else {
+				x1 = event.offsetX;
+				y1 = event.offsetY;
+				createLine(data, x0, y0, x1, y1);
+				flag = 0;
+			}
+		});
+
+	</script>
 
 </body>
+
 </html>
