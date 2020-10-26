@@ -20,7 +20,7 @@
 		let line = new Array();
 		let count = 0;
 
-		function createLine(x0, y0, x1, y1) {
+		function createLine(x0, y0, x1, y1, start) {
 
 			let dx = Math.abs(x1 - x0);
 			let dy = -1 * Math.abs(y1 - y0);
@@ -45,8 +45,10 @@
 					error += dx;
 					y0 += stepy;
 				}
-				x.push(x0);
-				y.push(y0);
+				if (start === true) {
+					x.push(x0);
+					y.push(y0);
+				}
 			}
 
 		}
@@ -64,14 +66,29 @@
 						ony = true;
 						currentX.push(x[j]);
 					}
-					else if (y[j] != i && ony === true) {
+					else if (y[j] != i) {
 						ony = false;
 					}
 				}
+				console.log(currentX)
+
+				if (currentX.length % 2 != 0) {
+					for (let j = 0; j < currentX.length; j++) {
+						let k = pointx.indexOf(currentX[j]);
+						if (k != -1)
+							if (Math.abs(i - pointy[k]) < 2) {
+								currentX.push(currentX[j]);
+								break;
+							}
+					}
+				}
+
+				currentX.sort();
+
 
 				for (let j = 1; j < currentX.length; j += 2) {
 					ctx.fillStyle = "#00ff00";
-					createLine(currentX[j - 1], i, currentX[j], i)
+					createLine(currentX[j - 1], i, currentX[j], i, false)
 					ctx.fillStyle = "#000000";
 				}
 			}
@@ -81,7 +98,7 @@
 			pointx.push(event.offsetX);
 			pointy.push(event.offsetY);
 			if (count >= 1) {
-				createLine(pointx[count - 1], pointy[count - 1], pointx[count], pointy[count]);
+				createLine(pointx[count - 1], pointy[count - 1], pointx[count], pointy[count], true);
 			}
 			count++;
 
@@ -90,12 +107,12 @@
 		document.addEventListener("keypress", function (event) {
 			pointx.push(pointx[0]);
 			pointy.push(pointy[0]);
-			createLine(pointx[count - 1], pointy[count - 1], pointx[0], pointy[0]);
+			createLine(pointx[count - 1], pointy[count - 1], pointx[0], pointy[0], true);
 
 			fillarea();
 
 			for (let j = 0; j < pointx.length - 1; j++) {
-				createLine(pointx[j], pointy[j], pointx[j + 1], pointy[j + 1])
+				createLine(pointx[j], pointy[j], pointx[j + 1], pointy[j + 1], false)
 			}
 
 		});
