@@ -1,0 +1,128 @@
+<html>
+
+<body>
+
+	<canvas width="512" height="512" id="lab06">
+	</canvas>
+
+	<script>
+		let canvas = document.getElementById("lab06");
+		let ctx = canvas.getContext("2d");
+
+		let x = new Array();
+		let y = new Array();
+		let miny = 512;
+		let maxy = -1;
+
+
+		function createLine(x0, y0, x1, y1, start) {
+
+			let dx = Math.abs(x1 - x0);
+			let dy = -1 * Math.abs(y1 - y0);
+			let stepx = (x0 < x1 ? 1 : -1);
+			let stepy = (y0 < y1 ? 1 : -1);
+			let error = dx + dy;
+			let end = false;
+			while (!end) {
+				ctx.fillRect(x0, y0, 1, 1);
+
+				if (Math.abs(x0 - x1) + Math.abs(y0 - y1) < 2) {
+					end = true;
+				}
+				if (y0 < miny) { miny = y0; }
+				if (y0 > maxy) { maxy = y0; }
+
+				if (2 * error >= dy) {
+					error += dy;
+					x0 += stepx;
+				}
+				if (2 * error <= dx) {
+					error += dx;
+					y0 += stepy;
+				}
+				if (start === true) {
+					x.push(x0);
+					y.push(y0);
+				}
+			}
+		}
+
+		function fillarea(points) {
+
+			for (let i = miny; i < maxy; ++i) {
+				let currentX = new Array();
+				var ony = false;
+
+				let prevX = 0;
+				for (let j = 0; j < y.length; j++) {
+
+					if (y[j] === i && ony === false) {
+						ony = true;
+						currentX.push(x[j]);
+					}
+					else if (y[j] != i) {
+						ony = false;
+					}
+				}
+
+				currentX.sort();
+
+				for (let j = 1; j < currentX.length; j++) {
+					ctx.fillStyle = "#00ff00";
+					createLine(currentX[j - 1], i, currentX[j], i, false)
+					ctx.fillStyle = "#000000";
+				}
+
+				for (let j = 0; j < points.length - 1; j++) {
+					createLine(logo_points[points[j] - 1].x, logo_points[points[j] - 1].y, logo_points[points[j + 1] - 1].x, logo_points[points[j + 1] - 1].y, true)
+				}
+			}
+		}
+
+		function fillPoligon(points) {
+
+			for (let j = 0; j < points.length - 1; j++) {
+				createLine(logo_points[points[j] - 1].x, logo_points[points[j] - 1].y, logo_points[points[j + 1] - 1].x, logo_points[points[j + 1] - 1].y, true)
+			}
+
+			fillarea(points)
+
+			x = [];
+			y = [];
+			miny = 512;
+			maxy = -1;
+		}
+
+		let logo_points = [
+			{ x: 10.0000, y: 100.0000, z: 20.0000 },
+			{ x: 20.0000, y: 70.0000, z: 30.0000 },
+			{ x: 40.0000, y: 10.0000, z: 10.0000 },
+			{ x: 60.0000, y: 70.0000, z: 40.0000 },
+			{ x: 120.0000, y: 70.0000, z: 40.0000 },
+			{ x: 140.0000, y: 10.0000, z: 10.0000 },
+			{ x: 160.0000, y: 70.0000, z: 30.0000 },
+			{ x: 170.0000, y: 100.0000, z: 20.0000 },
+			{ x: 90.0000, y: 160.0000, z: 10.0000 },
+		];
+
+		let logo_poligons = [
+			[1, 2, 9, 1],
+			[2, 4, 9, 2],
+			[2, 3, 4, 2],
+			[4, 5, 9, 4],
+			[5, 7, 9, 5],
+			[5, 6, 7, 5],
+			[7, 8, 9, 7],
+
+		];
+
+		for (let i = 0; i < 7; ++i) {
+			fillPoligon(logo_poligons[i])
+		}
+
+
+	</script>
+
+</body>
+
+</html>
